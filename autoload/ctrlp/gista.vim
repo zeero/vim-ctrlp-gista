@@ -72,15 +72,16 @@ call add(g:ctrlp_ext_vars, {
 " Return: a Vim's List
 "
 function! ctrlp#gista#init()
-  let gists = gista#gist#raw#list(gista#gist#raw#get_authenticated_user())
+  let gists = gista#gist#api#list('', {
+  \ 'page': -1,
+  \ 'nocache': 0,
+  \})
 
   let list = []
-  if get(gists, 'success')
-    for gist in gists.content
-      let filename = get(keys(gist.files), 0)
-      call add(list, gist.id . "\t" . filename . "\t" . gist.description)
-    endfor
-  endif
+  for gist in gists
+    let filename = get(keys(gist.files), 0)
+    call add(list, gist.id . "\t" . filename . "\t" . gist.description)
+  endfor
 
   return list
 endfunction
