@@ -83,6 +83,13 @@ function! ctrlp#gista#init()
     call add(list, gist.id . "\t" . filename . "\t" . gist.description)
   endfor
 
+"   call ctrlp#hicheck('CtrlPGistaId', 'ColorColumn')
+"   syn match CtrlPGistaId '> \zs[^t]*'
+  call ctrlp#hicheck('CtrlPGistaFilename', 'Constant')
+  syn match CtrlPGistaFilename '\t\zs[^\t]*'
+  call ctrlp#hicheck('CtrlPGistaDesc', 'Comment')
+  syn match CtrlPGistaDesc '\t[^\t]*$'
+
   return list
 endfunction
 
