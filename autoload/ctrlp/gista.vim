@@ -72,23 +72,27 @@ call add(g:ctrlp_ext_vars, {
 " Return: a Vim's List
 "
 function! ctrlp#gista#init()
+  " get gists
   let gists = gista#gist#api#list('', {
   \ 'page': -1,
   \ 'nocache': 0,
   \})
 
+  " make gists list
   let list = []
   for gist in gists
     let filename = get(keys(gist.files), 0)
-    call add(list, gist.id . "\t" . filename . "\t" . gist.description)
+    let padding = &columns - strdisplaywidth(filename) - strdisplaywidth(gist.description) - 26
+    call add(list, printf("%s\t%s%" . padding . "s\t%-20s", filename, gist.description, '', gist.id))
   endfor
 
-"   call ctrlp#hicheck('CtrlPGistaId', 'ColorColumn')
-"   syn match CtrlPGistaId '> \zs[^t]*'
-  call ctrlp#hicheck('CtrlPGistaFilename', 'Constant')
-  syn match CtrlPGistaFilename '\t\zs[^\t]*'
+  " highlight
+  call ctrlp#hicheck('CtrlPGistaFilename', 'Identifier')
+  syn match CtrlPGistaFilename ' [^\t]*\ze\t'
   call ctrlp#hicheck('CtrlPGistaDesc', 'Comment')
-  syn match CtrlPGistaDesc '\t[^\t]*$'
+  syn match CtrlPGistaDesc '\t\zs[^\t]*'
+  call ctrlp#hicheck('CtrlPGistaId', 'Special')
+  syn match CtrlPGistaId '\t\zs[^\t]*$'
 
   return list
 endfunction
@@ -103,7 +107,7 @@ endfunction
 "
 function! ctrlp#gista#accept(mode, str)
   call ctrlp#exit()
-  let gist_id = get(split(a:str, "\t"), 0)
+  let gist_id = get(split(a:str, "\t"), 2)
   call gista#interface#open(gist_id, '', {
   \ 'openers': g:gista#gist_openers,
   \ 'opener': g:gista#gist_default_opener,
