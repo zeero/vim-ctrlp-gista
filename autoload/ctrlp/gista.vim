@@ -82,8 +82,8 @@ function! ctrlp#gista#init()
   let list = []
   for gist in gists
     let filename = get(keys(gist.files), 0)
-    let padding = &columns - strdisplaywidth(filename) - strdisplaywidth(gist.description) - 26
-    call add(list, printf("%s\t%s%" . padding . "s\t%-20s", filename, gist.description, '', gist.id))
+    let padding = &columns - strdisplaywidth(filename) - strdisplaywidth(gist.description) - 24 - (&ts * 2)
+    call add(list, printf("%s\t%s%" . padding . "s\t[%-20s]", filename, gist.description, '', gist.id))
   endfor
 
   " highlight
