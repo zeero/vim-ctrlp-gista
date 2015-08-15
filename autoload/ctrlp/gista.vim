@@ -107,7 +107,7 @@ endfunction
 "
 function! ctrlp#gista#accept(mode, str)
   call ctrlp#exit()
-  let gist_id = get(split(a:str, "\t"), 2)
+  let gist_id = matchstr(get(split(a:str, "\t"), 2), '[0-9a-z]\+')
   call gista#interface#open(gist_id, '', {
   \ 'openers': g:gista#gist_openers,
   \ 'opener': g:gista#gist_default_opener,
