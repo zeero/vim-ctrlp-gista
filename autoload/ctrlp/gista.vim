@@ -77,12 +77,13 @@ function! ctrlp#gista#init()
   \ 'page': -1,
   \ 'nocache': 0,
   \})
+  call sort(gists, 's:sort_by_update')
 
   " make gists list
   let list = []
   for gist in gists
     let filename = get(keys(gist.files), 0)
-    let padding = &columns - strdisplaywidth(filename) - strdisplaywidth(gist.description) - 24 - (&ts * 2)
+    let padding = &columns - strdisplaywidth(filename) - strdisplaywidth(gist.description) - 24 - (shiftwidth() * 2)
     call add(list, printf("%s\t%s%" . padding . "s\t[%-20s]", filename, gist.description, '', gist.id))
   endfor
 
@@ -96,6 +97,11 @@ function! ctrlp#gista#init()
 
   return list
 endfunction
+function! s:sort_by_update(i1, i2) "{{{
+  let time1 = a:i1.updated_at
+  let time2 = a:i2.updated_at
+  return time1 == time2 ? 0 : time1 > time2 ? -1 : 1
+endfunction "}}}
 
 
 " The action to perform on the selected string
