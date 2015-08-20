@@ -77,7 +77,7 @@ function! ctrlp#gista#init()
   \ 'page': -1,
   \ 'nocache': 0,
   \})
-  call sort(gists, 's:sort_by_update')
+  call sort(gists, 's:sort_by_updated')
 
   " make gists list
   let list = []
@@ -97,10 +97,10 @@ function! ctrlp#gista#init()
 
   return list
 endfunction
-function! s:sort_by_update(i1, i2) "{{{
+function! s:sort_by_updated(i1, i2) "{{{
   let time1 = a:i1.updated_at
   let time2 = a:i2.updated_at
-  return time1 == time2 ? 0 : time1 > time2 ? -1 : 1
+  return time1 == time2 ? 0 : time1 < time2 ? 1 : -1
 endfunction "}}}
 
 
