@@ -66,17 +66,38 @@ call add(g:ctrlp_ext_vars, {
   \ 'specinput': 0,
   \ })
 
+let s:CACHE_FORCED   = 2
+
+let s:gista_options = {
+\ 'lookup':   '',
+\ 'username': 0,
+\ 'apiname':  '',
+\}
+
+let s:opener = {
+\ 'e': 'edit',
+\ 'v': 'vsplit',
+\ 'h': 'split',
+\ 't': 'tabnew',
+\}
 
 " Provide a list of strings to search in
 "
 " Return: a Vim's List
 "
 function! ctrlp#gista#init()
+  let session = gista#client#session(s:gista_options)
+  try
+    if session.enter()
+      let result = gista#command#list#call(s:gista_options)
+    else
+      return []
+    endif
+  finally
+    call session.exit()
+  endtry
   " get gists
-  let gists = gista#gist#api#list('', {
-  \ 'page': -1,
-  \ 'nocache': 0,
-  \})
+  let gists = result.index.entries
   call sort(gists, 's:sort_by_updated')
 
   " make gists list
@@ -114,10 +135,12 @@ endfunction "}}}
 function! ctrlp#gista#accept(mode, str)
   call ctrlp#exit()
   let gist_id = matchstr(get(split(a:str, "\t"), 2), '[0-9a-z]\+')
-  call gista#interface#open(gist_id, '', {
-  \ 'openers': g:gista#gist_openers,
-  \ 'opener': g:gista#gist_default_opener,
+  let bufname = gista#command#open#bufname({
+  \ 'gistid': gist_id,
+  \ 'cache': s:CACHE_FORCED,
+  \ 'verbose': 0,
   \})
+  execute printf('%s %s', s:opener[a:mode], bufname)
 endfunction
 
 
