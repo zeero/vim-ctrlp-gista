@@ -66,8 +66,6 @@ call add(g:ctrlp_ext_vars, {
   \ 'specinput': 0,
   \ })
 
-let s:CACHE_FORCED   = 2
-
 let s:gista_options = {
 \ 'lookup':   '',
 \ 'username': 0,
@@ -80,6 +78,9 @@ let s:opener = {
 \ 'h': 'split',
 \ 't': 'tabnew',
 \}
+
+let s:nocache = 0
+let s:cache_forced = 2
 
 " Provide a list of strings to search in
 "
@@ -137,7 +138,7 @@ function! ctrlp#gista#accept(mode, str)
   let gist_id = matchstr(get(split(a:str, "\t"), 2), '[0-9a-z]\+')
   let bufname = gista#command#open#bufname({
   \ 'gistid': gist_id,
-  \ 'cache': s:CACHE_FORCED,
+  \ 'cache': s:nocache,
   \ 'verbose': 0,
   \})
   execute printf('%s %s', s:opener[a:mode], bufname)
